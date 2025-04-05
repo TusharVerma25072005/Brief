@@ -40,7 +40,16 @@ android {
 }
 
 dependencies {
-
+    implementation ("androidx.compose:compose-bom:2024.04.00") // or latest BOM version
+    implementation("com.google.android.gms:play-services-auth:21.0.0")
+    // Required for Compose Navigation
+    implementation("androidx.navigation:navigation-compose")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+    // Other Compose dependencies (if not already added)
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx")
+    implementation("androidx.activity:activity-compose")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -55,6 +64,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("androidx.work:work-runtime-ktx:2.9.0")
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

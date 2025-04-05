@@ -1,4 +1,3 @@
-// Create file: app/src/main/java/com/example/myapplication/worker/EmailSyncWorker.kt
 package com.example.myapplication.worker
 
 import android.content.Context
@@ -12,13 +11,13 @@ import com.example.myapplication.network.GmailService
 import com.example.myapplication.network.NetworkModule
 import com.example.myapplication.network.SummaryService
 import com.example.myapplication.util.EncryptionUtil
+import com.example.myapplication.util.NotificationHelper
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import java.util.regex.Pattern
 
 class EmailSyncWorker(
     context: Context,
@@ -38,7 +37,12 @@ class EmailSyncWorker(
             val gmailService = NetworkModule.createGmailService(authToken)
             val emails = fetchEmails(gmailService)
 
-            processEmails(emails, gmailService, summaryService)
+            val processedEmails = processEmails(emails, gmailService, summaryService)
+
+            // Show notification for new emails
+            if (processedEmails.isNotEmpty()) {
+                NotificationHelper.showNewEmailsNotification(applicationContext, processedEmails)
+            }
 
             Result.success()
         } catch (e: Exception) {
@@ -133,7 +137,7 @@ class EmailSyncWorker(
         emails: List<Email>,
         gmailService: GmailService,
         summaryService: SummaryService
-    ) {
+    ): List<EmailEntity> {
         val emailEntities = mutableListOf<EmailEntity>()
 
         for (email in emails) {
@@ -212,5 +216,7 @@ class EmailSyncWorker(
         if (emailEntities.isNotEmpty()) {
             emailDao.insertEmails(emailEntities)
         }
+
+        return emailEntities
     }
 }
